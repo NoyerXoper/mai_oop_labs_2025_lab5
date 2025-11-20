@@ -65,7 +65,11 @@ Queue<T, Alloc>::Queue(const std::initializer_list<T>& list, const Alloc& alloc)
 
 template <class T, class Alloc>
 template <std::forward_iterator Iter>
-Queue<T, Alloc>::Queue(Iter start, Iter end, const Alloc& alloc): allocator_(alloc), head_(nullptr), end_(nullptr), size_(0) {
+Queue<T, Alloc>::Queue(Iter start, Iter end, const Alloc& alloc)
+    : allocator_(alloc)
+    , head_(nullptr)
+    , end_(nullptr)
+    , size_(0) {
     while (start != end) {
         PushBack(*start);
         ++start;
@@ -75,8 +79,8 @@ Queue<T, Alloc>::Queue(Iter start, Iter end, const Alloc& alloc): allocator_(all
 template <class T, class Alloc>
 Queue<T, Alloc>::Queue(const Queue& other)
     : Queue(other.begin(), other.end(),
-            AllocTraits::
-                select_on_container_copy_construction(other.allocator_)) {}
+            AllocTraits::select_on_container_copy_construction(
+                other.allocator_)) {}
 
 template <class T, class Alloc>
 Queue<T, Alloc>::Queue(Queue&& other) noexcept
@@ -92,8 +96,7 @@ Queue<T, Alloc>::Queue(Queue&& other) noexcept
 template <class T, class Alloc>
 Queue<T, Alloc>& Queue<T, Alloc>::operator=(const Queue& other) {
     Clear();
-    if constexpr (AllocTraits::
-                      propagate_on_container_copy_assignment::value) {
+    if constexpr (AllocTraits::propagate_on_container_copy_assignment::value) {
         allocator_ = other.allocator_;
     }
     for (auto& obj : other) {
@@ -114,8 +117,7 @@ Queue<T, Alloc>& Queue<T, Alloc>::operator=(Queue&& other) noexcept {
         other.size_ = 0;
         return *this;
     }
-    if constexpr (AllocTraits::
-                      propagate_on_container_move_assignment::value) {
+    if constexpr (AllocTraits::propagate_on_container_move_assignment::value) {
         allocator_ = other.allocator_;
         head_ = other.head_;
         end_ = other.end_;

@@ -13,7 +13,7 @@ private:
     struct MemoryData {
         void* data;
         std::size_t bytes;
-        std::size_t aligment;
+        std::size_t alignment;
     };
     virtual void* do_allocate(std::size_t bytes, std::size_t aligment) final;
     virtual void do_deallocate(void* p, std::size_t bytes,
