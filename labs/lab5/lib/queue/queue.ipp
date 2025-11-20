@@ -90,7 +90,7 @@ Queue<T, Alloc>::Queue(Queue&& other) noexcept
 }
 
 template <class T, class Alloc>
-Queue<T, Alloc>& Queue<T, Alloc>::operator=(const Queue<T, Alloc>& other) {
+Queue<T, Alloc>& Queue<T, Alloc>::operator=(const Queue& other) {
     Clear();
     if constexpr (AllocTraits::
                       propagate_on_container_copy_assignment::value) {
@@ -103,7 +103,7 @@ Queue<T, Alloc>& Queue<T, Alloc>::operator=(const Queue<T, Alloc>& other) {
 }
 
 template <class T, class Alloc>
-Queue<T, Alloc>& Queue<T, Alloc>::operator=(Queue<T, Alloc>&& other) noexcept {
+Queue<T, Alloc>& Queue<T, Alloc>::operator=(Queue&& other) noexcept {
     Clear();
     if (allocator_ == other.allocator_) {
         head_ = other.head_;
@@ -114,7 +114,7 @@ Queue<T, Alloc>& Queue<T, Alloc>::operator=(Queue<T, Alloc>&& other) noexcept {
         other.size_ = 0;
         return *this;
     }
-    if constexpr (std::allocator_traits<NodeAlloc>::
+    if constexpr (AllocTraits::
                       propagate_on_container_move_assignment::value) {
         allocator_ = other.allocator_;
         head_ = other.head_;
