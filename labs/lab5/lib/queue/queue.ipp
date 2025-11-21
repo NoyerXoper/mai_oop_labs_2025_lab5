@@ -154,12 +154,24 @@ template <class T, class Alloc>
 void Queue<T, Alloc>::PushBack(const T& obj) {
     if (end_) {
         end_->next = AllocTraits::allocate(allocator_, 1);
-        AllocTraits::construct(allocator_, end_->next, obj, nullptr);
+        try {
+            AllocTraits::construct(allocator_, end_->next, obj, nullptr);
+        } catch(const std::exception&) {
+            AllocTraits::deallocate(allocator_, end_->next, 1);
+            end_->next = nullptr;
+            throw;
+        }
         end_ = end_->next;
         ++size_;
     } else {
         head_ = AllocTraits::allocate(allocator_, 1);
-        AllocTraits::construct(allocator_, head_, obj, nullptr);
+        try {
+            AllocTraits::construct(allocator_, head_, obj, nullptr);
+        } catch(const std::exception&) {
+            AllocTraits::deallocate(allocator_, head_, 1);
+            head_ = nullptr;
+            throw;
+        }
         end_ = head_;
         ++size_;
     }
@@ -169,12 +181,24 @@ template <class T, class Alloc>
 void Queue<T, Alloc>::PushBack(T&& obj) {
     if (end_) {
         end_->next = AllocTraits::allocate(allocator_, 1);
-        AllocTraits::construct(allocator_, end_->next, std::move(obj), nullptr);
+        try {
+            AllocTraits::construct(allocator_, end_->next, std::move(obj), nullptr);
+        } catch(const std::exception&) {
+            AllocTraits::deallocate(allocator_, end_->next, 1);
+            end_->next = nullptr;
+            throw;
+        }
         end_ = end_->next;
         ++size_;
     } else {
         head_ = AllocTraits::allocate(allocator_, 1);
-        AllocTraits::construct(allocator_, head_, std::move(obj), nullptr);
+        try {
+            AllocTraits::construct(allocator_, head_, std::move(obj), nullptr);
+        } catch(const std::exception&) {
+            AllocTraits::deallocate(allocator_, head_, 1);
+            head_ = nullptr;
+            throw;
+        }
         end_ = head_;
         ++size_;
     }
